@@ -1,0 +1,40 @@
+Resources
+| where type == "microsoft.datafactory/factories/integrationruntimes"
+| extend 
+    DataFactoryName = tostring(split(id, "/")[8]),
+    IntegrationRuntimeName = name
+| project 
+    DataFactoryName,
+    IntegrationRuntimeName,
+    ResourceId = id,
+    ResourceGroup = resourceGroup,
+    Location = location,
+    SubscriptionId = subscriptionId,
+    
+    // Integration Runtime Type and Properties
+    RuntimeType = properties.type,
+    Description = properties.description,
+    
+    // Self-Hosted IR Properties
+    LinkedInfo = properties.typeProperties.linkedInfo,
+    
+    // Azure IR Properties
+    ComputeType = properties.typeProperties.computeProperties.location,
+    ComputeLocation = properties.typeProperties.computeProperties.location,
+    DataFlowComputeType = properties.typeProperties.computeProperties.dataFlowProperties.computeType,
+    CoreCount = properties.typeProperties.computeProperties.dataFlowProperties.coreCount,
+    TimeToLive = properties.typeProperties.computeProperties.dataFlowProperties.timeToLive,
+    
+    // SSIS IR Properties
+    CatalogInfo = properties.typeProperties.ssisProperties.catalogInfo,
+    LicenseType = properties.typeProperties.ssisProperties.licenseType,
+    Edition = properties.typeProperties.ssisProperties.edition,
+    CustomerVNetId = properties.typeProperties.ssisProperties.customSetupScriptProperties.blobContainerUri,
+    ExpressCustomSetup = properties.typeProperties.ssisProperties.expressCustomSetupProperties,
+    
+    // Managed Virtual Network
+    ManagedVirtualNetwork = properties.managedVirtualNetwork,
+    
+    State = properties.state,
+    AllProperties = properties
+| order by DataFactoryName, IntegrationRuntimeName
