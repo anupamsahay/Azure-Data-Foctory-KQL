@@ -1,0 +1,31 @@
+Resources
+| where type == "microsoft.datafactory/factories/datasets"
+| extend 
+    DataFactoryName = tostring(split(id, "/")[8]),
+    DatasetName = name
+| project 
+    DataFactoryName,
+    DatasetName,
+    ResourceId = id,
+    ResourceGroup = resourceGroup,
+    
+    // Dataset Properties
+    DatasetType = properties.type,
+    Description = properties.description,
+    LinkedServiceName = properties.linkedServiceName.referenceName,
+    LinkedServiceType = properties.linkedServiceName.type,
+    
+    // Type Properties
+    TypeProperties = properties.typeProperties,
+    Schema = properties.schema,
+    Structure = properties.structure,
+    
+    // Parameters
+    Parameters = properties.parameters,
+    
+    // Annotations and Folder
+    Annotations = properties.annotations,
+    Folder = properties.folder.name,
+    
+    AllProperties = properties
+| order by DataFactoryName, DatasetName
