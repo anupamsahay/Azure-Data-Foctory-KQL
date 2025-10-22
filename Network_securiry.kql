@@ -1,0 +1,35 @@
+Resources
+| where type == "microsoft.datafactory/factories"
+| project 
+    DataFactoryName = name,
+    ResourceGroup = resourceGroup,
+    Location = location,
+    
+    // Network Configuration
+    PublicNetworkAccess = properties.publicNetworkAccess,
+    ManagedVirtualNetwork = properties.managedVirtualNetwork,
+    ManagedVNetEnabled = properties.managedVirtualNetworkSettings.enabled,
+    PreventDataExfiltration = properties.managedVirtualNetworkSettings.preventDataExfiltration,
+    AllowedAadTenantIds = properties.managedVirtualNetworkSettings.allowedAadTenantIds,
+    
+    // Private Endpoints
+    PrivateEndpointConnections = properties.privateEndpointConnections,
+    
+    // Encryption
+    EncryptionEnabled = properties.encryption.vNetEnabled,
+    EncryptionIdentity = properties.encryption.identity.userAssignedIdentity,
+    CMKIdentity = properties.encryption.identity,
+    
+    // Identity
+    IdentityType = identity.type,
+    SystemAssignedIdentity = identity.principalId,
+    UserAssignedIdentities = identity.userAssignedIdentities,
+    
+    // Purview Integration
+    PurviewResourceId = properties.purviewConfiguration.purviewResourceId,
+    
+    // Customer Managed Key
+    CustomerManagedKeyIdentity = properties.customerManagedKeyIdentity,
+    
+    ProvisioningState = properties.provisioningState
+| order by DataFactoryName
