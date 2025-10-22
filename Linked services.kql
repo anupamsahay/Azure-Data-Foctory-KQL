@@ -1,0 +1,33 @@
+Resources
+| where type == "microsoft.datafactory/factories/linkedservices"
+| extend 
+    DataFactoryName = tostring(split(id, "/")[8]),
+    LinkedServiceName = name
+| project 
+    DataFactoryName,
+    LinkedServiceName,
+    ResourceId = id,
+    ResourceGroup = resourceGroup,
+    
+    // Linked Service Properties
+    LinkedServiceType = properties.type,
+    Description = properties.description,
+    
+    // Type Properties (varies by service type)
+    TypeProperties = properties.typeProperties,
+    ConnectionString = properties.typeProperties.connectionString,
+    ServiceUri = properties.typeProperties.serviceUri,
+    Endpoint = properties.typeProperties.endpoint,
+    
+    // Connect Via
+    ConnectVia = properties.connectVia.referenceName,
+    ConnectViaType = properties.connectVia.type,
+    
+    // Parameters
+    Parameters = properties.parameters,
+    
+    // Annotations
+    Annotations = properties.annotations,
+    
+    AllProperties = properties
+| order by DataFactoryName, LinkedServiceName
