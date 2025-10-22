@@ -1,0 +1,28 @@
+Resources
+| where type == "microsoft.datafactory/factories/pipelines"
+| extend 
+    DataFactoryName = tostring(split(id, "/")[8]),
+    PipelineName = name
+| project 
+    DataFactoryName,
+    PipelineName,
+    ResourceId = id,
+    ResourceGroup = resourceGroup,
+    SubscriptionId = subscriptionId,
+    
+    // Pipeline Properties
+    Description = properties.description,
+    Activities = properties.activities,
+    ActivityCount = array_length(properties.activities),
+    Parameters = properties.parameters,
+    Variables = properties.variables,
+    ConcurrencyLimit = properties.concurrency,
+    Annotations = properties.annotations,
+    RunDimensions = properties.runDimensions,
+    Folder = properties.folder.name,
+    
+    // Pipeline Policy
+    ElapsedTimeMetric = properties.policy.elapsedTimeMetric,
+    
+    AllProperties = properties
+| order by DataFactoryName, PipelineName
