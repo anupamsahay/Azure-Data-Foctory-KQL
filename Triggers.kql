@@ -1,0 +1,35 @@
+Resources
+| where type == "microsoft.datafactory/factories/triggers"
+| extend 
+    DataFactoryName = tostring(split(id, "/")[8]),
+    TriggerName = name
+| project 
+    DataFactoryName,
+    TriggerName,
+    ResourceId = id,
+    ResourceGroup = resourceGroup,
+    
+    // Trigger Properties
+    TriggerType = properties.type,
+    Description = properties.description,
+    RuntimeState = properties.runtimeState,
+    
+    // Type Properties (varies by trigger type)
+    TypeProperties = properties.typeProperties,
+    Recurrence = properties.typeProperties.recurrence,
+    Schedule = properties.typeProperties.schedule,
+    Interval = properties.typeProperties.interval,
+    Frequency = properties.typeProperties.frequency,
+    TimeZone = properties.typeProperties.timeZone,
+    StartTime = properties.typeProperties.startTime,
+    EndTime = properties.typeProperties.endTime,
+    
+    // Pipeline References
+    Pipelines = properties.pipelines,
+    PipelineCount = array_length(properties.pipelines),
+    
+    // Annotations
+    Annotations = properties.annotations,
+    
+    AllProperties = properties
+| order by DataFactoryName, TriggerName
