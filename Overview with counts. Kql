@@ -1,0 +1,31 @@
+Resources
+| where type startswith "microsoft.datafactory/factories"
+| extend 
+    DataFactoryName = case(
+        type == "microsoft.datafactory/factories", name,
+        tostring(split(id, "/")[8])
+    ),
+    ResourceType = case(
+        type == "microsoft.datafactory/factories", "Factory",
+        type == "microsoft.datafactory/factories/pipelines", "Pipeline",
+        type == "microsoft.datafactory/factories/datasets", "Dataset",
+        type == "microsoft.datafactory/factories/linkedservices", "LinkedService",
+        type == "microsoft.datafactory/factories/triggers", "Trigger",
+        type == "microsoft.datafactory/factories/integrationruntimes", "IntegrationRuntime",
+        type == "microsoft.datafactory/factories/dataflows", "DataFlow",
+        type == "microsoft.datafactory/factories/managedvirtualnetworks", "ManagedVirtualNetwork",
+        "Other"
+    ),
+    ResourceName = name
+| summarize 
+    ResourceCount = count(),
+    Resources = make_list(ResourceName)
+    by DataFactoryName, ResourceType, ResourceGroup = resourceGroup, Location = location
+| project 
+    DataFactoryName,
+    ResourceGroup,
+    Location,
+    ResourceType,
+    ResourceCount,
+    Resources
+| order by DataFactoryName, ResourceType
