@@ -1,0 +1,64 @@
+Resources
+| where type == "microsoft.datafactory/factories"
+| project 
+    // Basic Information
+    DataFactoryName = name,
+    ResourceId = id,
+    ResourceGroup = resourceGroup,
+    Location = location,
+    SubscriptionId = subscriptionId,
+    Tags = tags,
+    
+    // Identity
+    Identity = identity,
+    IdentityType = identity.type,
+    PrincipalId = identity.principalId,
+    TenantId = identity.tenantId,
+    UserAssignedIdentities = identity.userAssignedIdentities,
+    
+    // Version and Creation
+    Version = properties.version,
+    CreateTime = properties.createTime,
+    ProvisioningState = properties.provisioningState,
+    
+    // Repo Configuration
+    RepoConfiguration = properties.repoConfiguration,
+    RepoType = properties.repoConfiguration.type,
+    AccountName = properties.repoConfiguration.accountName,
+    RepositoryName = properties.repoConfiguration.repositoryName,
+    CollaborationBranch = properties.repoConfiguration.collaborationBranch,
+    RootFolder = properties.repoConfiguration.rootFolder,
+    LastCommitId = properties.repoConfiguration.lastCommitId,
+    
+    // Global Parameters
+    GlobalParameters = properties.globalParameters,
+    
+    // Encryption
+    Encryption = properties.encryption,
+    EncryptionVNetEnabled = properties.encryption.vNetEnabled,
+    EncryptionIdentity = properties.encryption.identity,
+    
+    // Public Network Access
+    PublicNetworkAccess = properties.publicNetworkAccess,
+    
+    // Purview Configuration
+    PurviewConfiguration = properties.purviewConfiguration,
+    PurviewResourceId = properties.purviewConfiguration.purviewResourceId,
+    
+    // Managed Virtual Network
+    ManagedVirtualNetwork = properties.managedVirtualNetwork,
+    ManagedVNetEnabled = properties.managedVirtualNetworkSettings.enabled,
+    PreventDataExfiltration = properties.managedVirtualNetworkSettings.preventDataExfiltration,
+    AllowedAadTenantIds = properties.managedVirtualNetworkSettings.allowedAadTenantIds,
+    
+    // System Data
+    CreatedBy = systemData.createdBy,
+    CreatedByType = systemData.createdByType,
+    CreatedAt = systemData.createdAt,
+    LastModifiedBy = systemData.lastModifiedBy,
+    LastModifiedByType = systemData.lastModifiedByType,
+    LastModifiedAt = systemData.lastModifiedAt,
+    
+    // All Properties
+    AllProperties = properties
+| order by DataFactoryName asc
